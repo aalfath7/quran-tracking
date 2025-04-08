@@ -5,7 +5,7 @@ export const connectToDB = async () => {
 
   try {
     await mongoose.connect(
-      process.env.MONGO_URI || "mongodb://localhost:27017/quran-tracking"
+      process.env.MONGODB_URI || "mongodb://localhost:27017/quran-tracking"
     );
     console.log("✅ MongoDB Connected");
   } catch (err) {
