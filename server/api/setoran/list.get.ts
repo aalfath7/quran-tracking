@@ -1,18 +1,13 @@
+// server/api/setoran/list.get.ts
 import { connectToDB } from "~/server/utils/mongoose";
 import Setoran from "~/server/models/Setoran";
 
-export default defineEventHandler(async (event) => {
+export default defineEventHandler(async () => {
   await connectToDB();
 
-  const query = getQuery(event);
-  const { guruId } = query;
+  const setorans = await Setoran.find().populate("santriId", "username");
 
-  const filter: any = {};
-  if (guruId) {
-    filter.guru = guruId;
-  }
-
-  const setorans = await Setoran.find(filter).populate("guru", "username");
-
-  return setorans;
+  return {
+    setorans,
+  };
 });
