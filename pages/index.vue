@@ -22,10 +22,10 @@
           <td class="py-2 px-4 border-b">{{ santri.nama }}</td>
           <td class="py-2 px-4 border-b">{{ santri.kelas }}</td>
           <td class="py-2 px-4 border-b">
-            {{ santri.halaqohId?.nama || "-" }}
+            {{ santri.halaqoh?.nama || "-" }}
           </td>
           <td class="py-2 px-4 border-b">
-            Ust. {{ santri.halaqohId?.guru?.name || "-" }}
+            Ust. {{ santri.halaqoh?.guru?.name || "-" }}
           </td>
         </tr>
       </tbody>

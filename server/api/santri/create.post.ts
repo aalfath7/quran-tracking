@@ -10,16 +10,16 @@ export default defineEventHandler(async (event) => {
 
   const body = await readBody(event);
 
-  if (!body.nama || !body.halaqohId || !body.kelas) {
+  if (!body.nama || !body.halaqoh || !body.kelas) {
     throw createError({
       statusCode: 400,
-      message: "Nama, halaqohId, dan kelas wajib diisi.",
+      message: "Nama, halaqoh, dan kelas wajib diisi.",
     });
   }
 
   const newSantri = await Santri.create({
     nama: body.nama,
-    halaqohId: body.halaqohId,
+    halaqoh: body.halaqoh,
     kelas: body.kelas,
   });
 

@@ -10,7 +10,7 @@ const santriSchema = new Schema({
     type: String,
     required: true,
   },
-  halaqohId: {
+  halaqoh: {
     type: Schema.Types.ObjectId,
     ref: "Halaqoh",
     required: true,

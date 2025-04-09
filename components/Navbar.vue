@@ -30,7 +30,13 @@
       <nav class="hidden md:flex space-x-6">
         <NuxtLink to="/" class="hover:text-green-600">Beranda</NuxtLink>
         <NuxtLink to="/setoran" class="hover:text-green-600">Setoran</NuxtLink>
-
+        <NuxtLink
+          v-if="auth.user?.role === 'guru'"
+          to="/dashboard"
+          class="hover:text-green-600"
+        >
+          Dashboard
+        </NuxtLink>
         <NuxtLink
           v-if="auth.user?.role === 'admin'"
           to="/admin/santri"
@@ -80,6 +86,13 @@
       <NuxtLink @click="closeMenu" to="/">Beranda</NuxtLink>
       <NuxtLink @click="closeMenu" to="/setoran">Setoran</NuxtLink>
 
+      <NuxtLink
+        v-if="auth.user?.role === 'guru'"
+        @click="closeMenu"
+        to="/dashboard"
+      >
+        Dashboard
+      </NuxtLink>
       <NuxtLink
         v-if="auth.user?.role === 'admin'"
         @click="closeMenu"

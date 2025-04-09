@@ -6,7 +6,7 @@ export default defineEventHandler(async () => {
   try {
     const santriList = await Santri.find()
       .populate({
-        path: "halaqohId",
+        path: "halaqoh",
         model: "Halaqoh",
         populate: {
           path: "guru",

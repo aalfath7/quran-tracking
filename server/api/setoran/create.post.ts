@@ -1,16 +1,24 @@
-// server/api/setoran/create.post.ts
+import { Setoran } from "~/server/models/Setoran";
 import { connectToDB } from "~/server/utils/mongoose";
-import Setoran from "~/server/models/Setoran";
 
 export default defineEventHandler(async (event) => {
   await connectToDB();
-
   const body = await readBody(event);
 
-  const setoran = await Setoran.create(body);
+  if (!body.santriId || !body.guruId || !body.surat || !body.ayat) {
+    throw createError({ statusCode: 400, message: "Data tidak lengkap" });
+  }
+
+  const setoran = await Setoran.create({
+    santri: body.santriId,
+    guru: body.guruId,
+    surat: body.surat,
+    ayat: body.ayat,
+    catatan: body.catatan || "",
+  });
 
   return {
-    message: "Setoran berhasil dikirim",
-    setoran,
+    success: true,
+    data: setoran,
   };
 });

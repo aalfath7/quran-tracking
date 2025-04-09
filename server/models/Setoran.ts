@@ -1,26 +1,36 @@
-// server/models/Setoran.ts
 import mongoose from "mongoose";
+const { Schema } = mongoose;
 
-const setoranSchema = new mongoose.Schema(
+const setoranSchema = new Schema(
   {
-    santriId: {
-      type: mongoose.Schema.Types.ObjectId,
+    santri: {
+      type: Schema.Types.ObjectId,
+      ref: "Santri",
+      required: true,
+    },
+    guru: {
+      type: Schema.Types.ObjectId,
       ref: "User",
       required: true,
     },
-    surat: String,
-    ayat: String,
-    nilai: Number,
-    catatan: String,
-    tanggal: { type: Date, default: Date.now },
-    status: {
+    tanggal: {
+      type: Date,
+      default: Date.now,
+    },
+    surat: {
       type: String,
-      enum: ["pending", "diterima", "ditolak"],
-      default: "pending",
+      required: true,
+    },
+    ayat: {
+      type: String,
+      required: true,
+    },
+    catatan: {
+      type: String,
     },
   },
   { timestamps: true }
 );
 
-export default mongoose.models.Setoran ||
-  mongoose.model("Setoran", setoranSchema);
+export const Setoran =
+  mongoose.models.Setoran || mongoose.model("Setoran", setoranSchema);

@@ -1,6 +1,6 @@
 // server/api/setoran/list.get.ts
 import { connectToDB } from "~/server/utils/mongoose";
-import Setoran from "~/server/models/Setoran";
+import { Setoran } from "~/server/models/Setoran";
 
 export default defineEventHandler(async () => {
   await connectToDB();

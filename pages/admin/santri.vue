@@ -31,7 +31,7 @@
       <div class="mb-4">
         <label class="block text-sm font-medium text-gray-700">Halaqoh</label>
         <select
-          v-model="form.halaqohId"
+          v-model="form.halaqoh"
           class="mt-1 block w-full p-2 border rounded"
           required
         >
@@ -72,7 +72,7 @@ import { ref, onMounted } from "vue";
 const form = ref({
   nama: "",
   kelas: "",
-  halaqohId: "",
+  halaqoh: "",
 });
 
 const halaqohList = ref([]);
@@ -98,7 +98,7 @@ const handleSubmit = async () => {
       body: { ...form.value },
     });
     successMessage.value = "Santri berhasil ditambahkan!";
-    form.value = { nama: "", kelas: "", halaqohId: "" };
+    form.value = { nama: "", kelas: "", halaqoh: "" };
   } catch (err) {
     errorMessage.value =
       err?.data?.message || "Terjadi kesalahan saat menyimpan.";

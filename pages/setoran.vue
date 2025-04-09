@@ -1,49 +1,98 @@
 <template>
-  <div class="p-4 max-w-xl mx-auto">
-    <h2 class="text-xl font-bold mb-4">Kirim Setoran Hafalan</h2>
-    <form @submit.prevent="submitSetoran" class="space-y-4">
-      <input v-model="surat" placeholder="Nama Surat" class="input" />
-      <input v-model="ayat" placeholder="Ayat" class="input" />
-      <textarea
-        v-model="catatan"
-        placeholder="Catatan"
-        class="input"
-      ></textarea>
+  <div class="max-w-xl mx-auto mt-24 p-6 bg-white shadow rounded">
+    <h2 class="text-xl font-bold text-green-700 mb-4">Input Setoran Santri</h2>
 
-      <button class="bg-blue-600 text-white px-4 py-2 rounded">Kirim</button>
+    <form @submit.prevent="submitSetoran">
+      <div class="mb-4">
+        <label class="block mb-1">Santri</label>
+        <select v-model="form.santriId" class="w-full border p-2 rounded">
+          <option value="">Pilih Santri</option>
+          <option v-for="s in santriList" :key="s._id" :value="s._id">
+            {{ s.nama }} - {{ s.kelas }}
+          </option>
+        </select>
+      </div>
+
+      <div class="mb-4">
+        <label class="block mb-1">Surat</label>
+        <input
+          v-model="form.surat"
+          class="w-full border p-2 rounded"
+          placeholder="Contoh: Al-Baqarah"
+        />
+      </div>
+
+      <div class="mb-4">
+        <label class="block mb-1">Ayat</label>
+        <input
+          v-model="form.ayat"
+          class="w-full border p-2 rounded"
+          placeholder="Contoh: 1-5"
+        />
+      </div>
+
+      <div class="mb-4">
+        <label class="block mb-1">Catatan</label>
+        <textarea
+          v-model="form.catatan"
+          class="w-full border p-2 rounded"
+        ></textarea>
+      </div>
+
+      <button
+        type="submit"
+        class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700"
+      >
+        Simpan Setoran
+      </button>
     </form>
   </div>
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
+import { useAuthStore } from "@/stores/auth"; // pastikan path benar
 
-const surat = ref("");
-const ayat = ref("");
-const catatan = ref("");
+const auth = useAuthStore();
+auth.loadFromStorage();
 
-const submitSetoran = async () => {
+const guruId = computed(() => auth.user?._id || "");
+
+const form = ref({
+  santriId: "",
+  surat: "",
+  ayat: "",
+  catatan: "",
+});
+
+const santriList = ref([]);
+
+onMounted(async () => {
+  const res = await $fetch("/api/santri/list");
+  santriList.value = res.data.filter(
+    (s) => s.halaqoh?.guru?._id === guruId.value
+  );
+});
+
+async function submitSetoran() {
   try {
     await $fetch("/api/setoran/create", {
       method: "POST",
       body: {
-        surat: surat.value,
-        ayat: ayat.value,
-        catatan: catatan.value,
-        // Ambil santriId dari auth store jika perlu
+        ...form.value,
+        guruId: guruId.value,
       },
     });
-    alert("Setoran berhasil dikirim!");
-    surat.value = ayat.value = catatan.value = "";
-  } catch (err) {
-    console.error(err);
-    alert("Gagal mengirim setoran");
+    alert("Setoran berhasil disimpan!");
+    form.value = {
+      santriId: "",
+      surat: "",
+      ayat: "",
+      catatan: "",
+    };
+  } catch (e) {
+    alert("Gagal menyimpan setoran.");
+    console.error(e);
   }
-};
-</script>
-
-<style scoped>
-.input {
-  @apply w-full border border-gray-300 rounded px-3 py-2;
 }
-</style>
+</script>

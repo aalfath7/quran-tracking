@@ -1,5 +1,5 @@
 import { connectToDB } from "~/server/utils/mongoose";
-import Setoran from "~/server/models/Setoran";
+import { Setoran } from "~/server/models/Setoran";
 
 export default defineEventHandler(async (event) => {
   await connectToDB();
