@@ -15,16 +15,11 @@ export default defineEventHandler(async (event) => {
 
   try {
     const decoded: any = jwtDecode(token);
-    const guruId = decoded.id;
+    const role = decoded.role; // admin / guru — hanya sebagai referensi
 
-    // 1. Ambil semua halaqoh milik guru
-    const halaqohList = await Halaqoh.find({ guru: guruId });
+    // ✅ Ambil semua santri tanpa filter berdasarkan guru
+    const santriList = await Santri.find({});
 
-    // 2. Ambil semua santri dari halaqoh tersebut
-    const halaqohIds = halaqohList.map((h) => h._id);
-    const santriList = await Santri.find({ halaqoh: { $in: halaqohIds } });
-
-    // 3. Hitung total setoran dan bulan ini untuk setiap santri
     const now = new Date();
     const firstOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
 
@@ -42,16 +37,36 @@ export default defineEventHandler(async (event) => {
           _id: santri._id,
           nama: santri.nama,
           kelas: santri.kelas,
-          halaqohId: santri.halaqohId,
+          halaqohId: santri.halaqoh,
           totalSetoran,
           bulanIni,
         };
       })
     );
 
+    // ✅ Data grafik setoran per bulan
+    const grafikSetoran = await Setoran.aggregate([
+      {
+        $group: {
+          _id: {
+            tahun: { $year: "$tanggal" },
+            bulan: { $month: "$tanggal" },
+          },
+          jumlah: { $sum: 1 },
+        },
+      },
+      {
+        $sort: { "_id.tahun": 1, "_id.bulan": 1 },
+      },
+    ]);
+
     return {
       success: true,
       data: enrichedSantri,
+      grafik: grafikSetoran.map((item) => ({
+        bulan: `${item._id.bulan}/${item._id.tahun}`,
+        jumlah: item.jumlah,
+      })),
     };
   } catch (err) {
     console.error("Gagal mengambil data dashboard:", err);

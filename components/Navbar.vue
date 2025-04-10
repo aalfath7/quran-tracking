@@ -32,10 +32,10 @@
         <NuxtLink to="/setoran" class="hover:text-green-600">Setoran</NuxtLink>
         <NuxtLink
           v-if="auth.user?.role === 'guru'"
-          to="/dashboard"
+          to="/halaqoh"
           class="hover:text-green-600"
         >
-          Dashboard
+          Halaqoh
         </NuxtLink>
         <NuxtLink
           v-if="auth.user?.role === 'admin'"
@@ -89,9 +89,9 @@
       <NuxtLink
         v-if="auth.user?.role === 'guru'"
         @click="closeMenu"
-        to="/dashboard"
+        to="/halaqoh"
       >
-        Dashboard
+        Halaqoh
       </NuxtLink>
       <NuxtLink
         v-if="auth.user?.role === 'admin'"
