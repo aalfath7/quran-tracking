@@ -1,6 +1,7 @@
 import { defineEventHandler, getCookie } from "h3";
 import { Halaqoh } from "~/server/models/Halaqoh";
 import { Santri } from "~/server/models/Santri";
+import User from "~/server/models/User";
 import jwt from "jsonwebtoken";
 
 export default defineEventHandler(async (event) => {
@@ -25,10 +26,11 @@ export default defineEventHandler(async (event) => {
     const enrichedHalaqoh = await Promise.all(
       halaqohList.map(async (h) => {
         const santri = await Santri.find({ halaqoh: h._id });
+        const guru = await User.find({ _id: guruId }).select("name");
         return {
           _id: h._id,
           nama: h.nama,
-          guru: h.guru,
+          guru: guru[0].name,
           santri,
         };
       })

@@ -7,7 +7,7 @@
         <h2 class="text-xl font-semibold text-green-800 capitalize">
           {{ halaqoh.nama }}
         </h2>
-        <p class="text-gray-600 capitalize">Guru: {{ halaqoh.guru.name }}</p>
+        <p class="text-gray-600 capitalize">Guru: {{ halaqoh.guru }}</p>
       </div>
 
       <table class="min-w-full bg-white border mt-2">

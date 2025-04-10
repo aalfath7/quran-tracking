@@ -67,6 +67,8 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { useAuthStore } from "@/stores/auth"; // pastikan path benar
+import { useRouter } from "vue-router"; // impor router
+const router = useRouter();
 
 const auth = useAuthStore();
 auth.loadFromStorage();
@@ -224,6 +226,7 @@ async function submitSetoran() {
       jumlahHalaman: "",
       catatan: "",
     };
+    router.push("/");
   } catch (e) {
     alert("Gagal menyimpan setoran.");
     console.error(e);

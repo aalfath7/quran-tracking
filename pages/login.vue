@@ -3,14 +3,14 @@
     <div class="bg-white p-8 rounded shadow-md w-full max-w-md">
       <!-- Logo -->
       <div class="flex justify-center mb-4">
-        <img src="/logo-qt.png" alt="Logo" class="h-16 w-auto" />
+        <img src="/logo-qt.png" alt="Logo" class="w-72" />
       </div>
 
       <h2 class="text-2xl font-bold mb-6 text-center text-green-700">Login</h2>
 
       <form @submit.prevent="handleLogin">
         <div class="mb-4">
-          <label class="block text-gray-700 mb-1">Username</label>
+          <label class="block text-gray-700 font-bold mb-1">Username</label>
           <input
             v-model="username"
             type="text"
@@ -20,7 +20,7 @@
         </div>
 
         <div class="mb-4">
-          <label class="block text-gray-700 mb-1">Password</label>
+          <label class="block text-gray-700 font-bold mb-1">Password</label>
           <input
             v-model="password"
             type="password"
