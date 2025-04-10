@@ -2,7 +2,7 @@
   <header class="bg-white shadow-md fixed top-0 left-0 w-full z-50">
     <div class="container mx-auto px-4 py-3 flex justify-between items-center">
       <NuxtLink to="/" class="text-xl font-bold text-green-700">
-        HafalanQur'an
+        <img src="/logo-qt.png" class="h-8" alt="" />
       </NuxtLink>
       <button class="md:hidden" @click="toggleMenu">
         <svg

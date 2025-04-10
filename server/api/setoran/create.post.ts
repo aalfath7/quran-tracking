@@ -5,7 +5,13 @@ export default defineEventHandler(async (event) => {
   await connectToDB();
   const body = await readBody(event);
 
-  if (!body.santriId || !body.guruId || !body.surat || !body.ayat) {
+  if (
+    !body.santriId ||
+    !body.guruId ||
+    !body.surat ||
+    !body.jumlahHalaman ||
+    !body.ayat
+  ) {
     throw createError({ statusCode: 400, message: "Data tidak lengkap" });
   }
 
@@ -14,6 +20,7 @@ export default defineEventHandler(async (event) => {
     guru: body.guruId,
     surat: body.surat,
     ayat: body.ayat,
+    jumlahHalaman: body.jumlahHalaman,
     catatan: body.catatan || "",
   });
 

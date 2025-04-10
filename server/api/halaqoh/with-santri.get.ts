@@ -1,10 +1,26 @@
-import { defineEventHandler } from "h3";
+import { defineEventHandler, getCookie } from "h3";
 import { Halaqoh } from "~/server/models/Halaqoh";
 import { Santri } from "~/server/models/Santri";
+import jwt from "jsonwebtoken";
 
-export default defineEventHandler(async () => {
+export default defineEventHandler(async (event) => {
   try {
-    const halaqohList = await Halaqoh.find().populate("guru", "name");
+    const token = getCookie(event, "token");
+
+    if (!token) {
+      return { success: false, message: "Token tidak ditemukan." };
+    }
+
+    // ✅ Decode token
+    const decoded: any = jwt.verify(token, process.env.JWT_SECRET || "");
+
+    const guruId = decoded.id; // Sesuai dengan isi di jwt.sign()
+
+    // ✅ Ambil hanya halaqoh milik guru ini
+    const halaqohList = await Halaqoh.find({ guru: guruId }).populate(
+      "guru",
+      "nama"
+    );
 
     const enrichedHalaqoh = await Promise.all(
       halaqohList.map(async (h) => {
@@ -23,10 +39,7 @@ export default defineEventHandler(async () => {
       data: enrichedHalaqoh,
     };
   } catch (err) {
-    console.error("Gagal ambil list halaqoh beserta santri:", err);
-    return {
-      success: false,
-      message: "Gagal mengambil data.",
-    };
+    console.error("Gagal ambil halaqoh:", err);
+    return { success: false, message: "Gagal mengambil data." };
   }
 });

@@ -1,6 +1,11 @@
 <template>
   <div class="min-h-screen flex items-center justify-center bg-gray-100">
     <div class="bg-white p-8 rounded shadow-md w-full max-w-md">
+      <!-- Logo -->
+      <div class="flex justify-center mb-4">
+        <img src="/logo-qt.png" alt="Logo" class="h-16 w-auto" />
+      </div>
+
       <h2 class="text-2xl font-bold mb-6 text-center text-green-700">Login</h2>
 
       <form @submit.prevent="handleLogin">
@@ -35,6 +40,17 @@
           Login
         </button>
       </form>
+
+      <!-- Link ke register -->
+      <p class="mt-6 text-center text-sm text-gray-600">
+        Belum punya akun?
+        <NuxtLink
+          to="/register"
+          class="text-green-600 hover:underline font-medium"
+        >
+          Daftar di sini
+        </NuxtLink>
+      </p>
     </div>
   </div>
 </template>
@@ -42,6 +58,10 @@
 <script setup>
 import { ref } from "vue";
 import { useRouter } from "vue-router";
+
+definePageMeta({
+  layout: "login",
+});
 
 const username = ref("");
 const password = ref("");
@@ -59,11 +79,9 @@ const handleLogin = async () => {
     const token = useCookie("token");
     token.value = res.token;
 
-    // Simpan user role jika perlu
     const role = useCookie("role");
     role.value = res.user.role;
 
-    // Redirect ke dashboard
     router.push("/");
   } catch (err) {
     error.value = err?.data?.statusMessage || "Gagal login. Coba lagi.";

@@ -1,11 +1,13 @@
 <template>
   <div class="max-w-5xl mx-auto mt-24 p-6 bg-white shadow rounded">
-    <h1 class="text-2xl font-bold mb-6 text-green-700">Daftar Halaqoh</h1>
+    <h1 class="text-2xl font-bold mb-6 text-green-700">Data Halaqoh</h1>
 
     <div v-for="halaqoh in halaqohList" :key="halaqoh._id" class="mb-10">
       <div class="mb-2">
-        <h2 class="text-xl font-semibold text-green-800">{{ halaqoh.nama }}</h2>
-        <p class="text-gray-600">Guru: {{ halaqoh.guru.name }}</p>
+        <h2 class="text-xl font-semibold text-green-800 capitalize">
+          {{ halaqoh.nama }}
+        </h2>
+        <p class="text-gray-600 capitalize">Guru: {{ halaqoh.guru.name }}</p>
       </div>
 
       <table class="min-w-full bg-white border mt-2">
@@ -21,7 +23,7 @@
             :key="santri._id"
             class="hover:bg-gray-50"
           >
-            <td class="py-2 px-4 border-b">{{ santri.nama }}</td>
+            <td class="py-2 px-4 border-b capitalize">{{ santri.nama }}</td>
             <td class="py-2 px-4 border-b">{{ santri.kelas }}</td>
           </tr>
           <tr v-if="!halaqoh.santri.length">

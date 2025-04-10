@@ -1,58 +1,84 @@
 <template>
-  <div class="container mx-auto px-4 py-10 max-w-md">
-    <h1 class="text-2xl font-bold mb-6 text-center text-green-700">
-      Registrasi Guru
-    </h1>
-
-    <form @submit.prevent="handleRegister" class="space-y-4">
-      <div>
-        <label class="block mb-1 font-semibold">Nama Lengkap</label>
-        <input
-          v-model="form.name"
-          type="text"
-          class="w-full border px-3 py-2 rounded"
-          required
-        />
+  <div class="min-h-screen flex items-center justify-center bg-gray-100">
+    <div class="bg-white p-8 rounded shadow-md w-full max-w-md">
+      <!-- Logo -->
+      <div class="flex justify-center mb-4">
+        <img src="/logo-qt.png" alt="Logo" class="h-16 w-auto" />
       </div>
 
-      <div>
-        <label class="block mb-1 font-semibold">Username</label>
-        <input
-          v-model="form.username"
-          type="text"
-          class="w-full border px-3 py-2 rounded"
-          required
-        />
+      <h1 class="text-2xl font-bold mb-6 text-center text-green-700">
+        Registrasi Guru
+      </h1>
+
+      <form @submit.prevent="handleRegister" class="space-y-4">
+        <div>
+          <label class="block mb-1 font-semibold text-gray-700"
+            >Nama Lengkap</label
+          >
+          <input
+            v-model="form.name"
+            type="text"
+            class="w-full border px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
+            required
+          />
+        </div>
+
+        <div>
+          <label class="block mb-1 font-semibold text-gray-700">Username</label>
+          <input
+            v-model="form.username"
+            type="text"
+            class="w-full border px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
+            required
+          />
+        </div>
+
+        <div>
+          <label class="block mb-1 font-semibold text-gray-700">Password</label>
+          <input
+            v-model="form.password"
+            type="password"
+            class="w-full border px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
+            required
+          />
+        </div>
+
+        <button
+          type="submit"
+          class="w-full bg-green-700 hover:bg-green-800 text-white font-semibold py-2 rounded transition"
+          :disabled="loading"
+        >
+          {{ loading ? "Mendaftar..." : "Daftar sebagai Guru" }}
+        </button>
+      </form>
+
+      <div v-if="message" class="mt-4 text-green-600 text-center">
+        {{ message }}
+      </div>
+      <div v-if="error" class="mt-4 text-red-600 text-center">
+        {{ error }}
       </div>
 
-      <div>
-        <label class="block mb-1 font-semibold">Password</label>
-        <input
-          v-model="form.password"
-          type="password"
-          class="w-full border px-3 py-2 rounded"
-          required
-        />
-      </div>
-
-      <button
-        type="submit"
-        class="w-full bg-green-700 hover:bg-green-800 text-white py-2 rounded"
-        :disabled="loading"
-      >
-        {{ loading ? "Mendaftar..." : "Daftar sebagai Guru" }}
-      </button>
-    </form>
-
-    <div v-if="message" class="mt-4 text-green-600 text-center">
-      {{ message }}
+      <!-- Link ke login -->
+      <p class="mt-6 text-center text-sm text-gray-600">
+        Sudah punya akun?
+        <NuxtLink
+          to="/login"
+          class="text-green-600 hover:underline font-medium"
+        >
+          Login di sini
+        </NuxtLink>
+      </p>
     </div>
-    <div v-if="error" class="mt-4 text-red-600 text-center">{{ error }}</div>
   </div>
 </template>
 
 <script setup>
 import { ref } from "vue";
+
+definePageMeta({
+  layout: "login",
+});
 
 const form = ref({
   name: "",

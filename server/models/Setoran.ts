@@ -25,6 +25,10 @@ const setoranSchema = new Schema(
       type: String,
       required: true,
     },
+    jumlahHalaman: {
+      type: Number,
+      required: true,
+    },
     catatan: {
       type: String,
     },
