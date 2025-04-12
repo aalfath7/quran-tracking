@@ -2,7 +2,7 @@
   <div>
     <Navbar />
 
-    <main class="mt-20"><slot /></main>
+    <main class="mt-20 mb-10 mx-2"><slot /></main>
 
     <Footer />
   </div>

@@ -2,7 +2,16 @@
   <div class="max-w-5xl mx-auto mt-24 p-6 bg-white shadow rounded">
     <h1 class="text-2xl font-bold mb-6 text-green-700">Data Halaqoh</h1>
 
-    <div v-for="halaqoh in halaqohList" :key="halaqoh._id" class="mb-10">
+    <!-- Tampilkan jika tidak ada halaqoh -->
+    <div
+      v-if="halaqohList.length === 0"
+      class="text-center text-gray-500 italic"
+    >
+      Belum ada halaqoh.
+    </div>
+
+    <!-- Daftar halaqoh -->
+    <div v-else v-for="halaqoh in halaqohList" :key="halaqoh._id" class="mb-10">
       <div class="mb-2">
         <h2 class="text-xl font-semibold text-green-800 capitalize">
           {{ halaqoh.nama }}

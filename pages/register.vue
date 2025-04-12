@@ -12,9 +12,9 @@
 
       <form @submit.prevent="handleRegister" class="space-y-4">
         <div>
-          <label class="block mb-1 font-semibold text-gray-700"
-            >Nama Lengkap</label
-          >
+          <label class="block mb-1 font-semibold text-gray-700">
+            Nama Lengkap
+          </label>
           <input
             v-model="form.name"
             type="text"
@@ -45,9 +45,30 @@
 
         <button
           type="submit"
-          class="w-full bg-green-700 hover:bg-green-800 text-white font-semibold py-2 rounded transition"
+          class="w-full bg-green-700 hover:bg-green-800 text-white font-semibold py-2 rounded transition flex items-center justify-center gap-2"
           :disabled="loading"
         >
+          <svg
+            v-if="loading"
+            class="animate-spin h-5 w-5 text-white"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <circle
+              class="opacity-25"
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              stroke-width="4"
+            ></circle>
+            <path
+              class="opacity-75"
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+            ></path>
+          </svg>
           {{ loading ? "Mendaftar..." : "Daftar sebagai Guru" }}
         </button>
       </form>

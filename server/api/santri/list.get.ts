@@ -11,7 +11,7 @@ export default defineEventHandler(async () => {
         populate: {
           path: "guru",
           model: User,
-          select: "name",
+          select: "nama",
         },
       })
       .lean();

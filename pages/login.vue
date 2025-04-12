@@ -35,9 +35,31 @@
 
         <button
           type="submit"
-          class="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 rounded transition"
+          :disabled="isLoading"
+          class="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 rounded transition flex items-center justify-center"
         >
-          Login
+          <svg
+            v-if="isLoading"
+            class="animate-spin mr-2 h-5 w-5 text-white"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <circle
+              class="opacity-25"
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              stroke-width="4"
+            />
+            <path
+              class="opacity-75"
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"
+            />
+          </svg>
+          {{ isLoading ? "Memproses..." : "Login" }}
         </button>
       </form>
 
@@ -66,10 +88,13 @@ definePageMeta({
 const username = ref("");
 const password = ref("");
 const error = ref("");
+const isLoading = ref(false);
 const router = useRouter();
 
 const handleLogin = async () => {
   error.value = "";
+  isLoading.value = true;
+
   try {
     const res = await $fetch("/api/auth/login", {
       method: "POST",
@@ -85,6 +110,8 @@ const handleLogin = async () => {
     router.push("/");
   } catch (err) {
     error.value = err?.data?.statusMessage || "Gagal login. Coba lagi.";
+  } finally {
+    isLoading.value = false;
   }
 };
 </script>
