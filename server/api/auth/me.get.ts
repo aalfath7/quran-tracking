@@ -16,10 +16,7 @@ export default defineEventHandler(async (event) => {
 
   const token = authHeader.split(" ")[1];
   try {
-    const decoded = jwt.verify(
-      token,
-      process.env.JWT_SECRET || "rahasiaSuper"
-    ) as any;
+    const decoded = jwt.verify(token, process.env.JWT_SECRET as string) as any;
     const user = await User.findById(decoded.id).select("-password");
     if (!user) throw new Error();
 

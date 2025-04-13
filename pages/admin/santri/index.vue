@@ -13,20 +13,26 @@
     <table class="min-w-full border">
       <thead>
         <tr class="bg-gray-100">
-          <th class="p-2">Nama</th>
-          <th class="p-2">Kelas</th>
-          <th class="p-2">Aksi</th>
+          <th class="border p-2">Nama</th>
+          <th class="border p-2">Kelas</th>
+          <th class="border p-2">Aksi</th>
         </tr>
       </thead>
       <tbody>
         <tr v-for="santri in santriList" :key="santri._id">
-          <td class="p-2 text-center capitalize">{{ santri.nama }}</td>
-          <td class="p-2 text-center">{{ santri.kelas }}</td>
-          <td class="p-2 text-center space-x-2">
-            <button @click="openEdit(santri)" class="text-blue-500">
+          <td class="border p-2 text-center capitalize">{{ santri.nama }}</td>
+          <td class="border p-2 text-center">{{ santri.kelas }}</td>
+          <td class="border p-2 text-center space-x-2">
+            <button
+              @click="openEdit(santri)"
+              class="bg-blue-500 text-white px-2 py-1 rounded"
+            >
               Edit
             </button>
-            <button @click="hapusSantri(santri._id)" class="text-red-500">
+            <button
+              @click="hapusSantri(santri._id)"
+              class="bg-red-500 text-white px-2 py-1 rounded"
+            >
               Hapus
             </button>
           </td>

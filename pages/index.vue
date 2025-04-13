@@ -6,17 +6,16 @@
 
     <!-- Grid Layout 2 Columns 2 Rows -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
+      <div class="bg-gray-50 p-4 rounded shadow">
+        <AverageDailySetoranChart />
+      </div>
+
       <!-- Grafik Rata-Rata per Bulan -->
       <div
         v-if="avgChartData && avgChartOptions"
         class="bg-gray-50 p-4 rounded shadow"
       >
         <LineChart :chartData="avgChartData" :chartOptions="avgChartOptions" />
-      </div>
-
-      <!-- Grafik Rata-Rata Harian -->
-      <div class="bg-gray-50 p-4 rounded shadow">
-        <AverageDailyChart />
       </div>
 
       <!-- Grafik Total & Bulan Ini -->

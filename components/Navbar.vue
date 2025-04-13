@@ -58,6 +58,13 @@
         >
           Approve Guru
         </NuxtLink>
+        <NuxtLink
+          v-if="auth.user?.role === 'guru'"
+          to="/edit-profile"
+          class="hover:text-green-600"
+        >
+          Profile
+        </NuxtLink>
 
         <span v-if="auth.user">
           <button @click="logout" class="text-red-600 hover:underline">
@@ -113,6 +120,13 @@
         to="/admin/guru-pending"
       >
         Approve Guru
+      </NuxtLink>
+      <NuxtLink
+        v-if="auth.user?.role === 'guru'"
+        to="/edit-profile"
+        class="hover:text-green-600"
+      >
+        Profile
       </NuxtLink>
 
       <span v-if="auth.user">

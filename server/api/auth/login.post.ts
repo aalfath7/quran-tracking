@@ -34,8 +34,9 @@ export default defineEventHandler(async (event) => {
     );
   }
 
+  // Buat JWT dengan menambahkan name ke dalam payload
   const token = jwt.sign(
-    { id: user._id, role: user.role, username: user.username },
+    { id: user._id, role: user.role, username: user.username, name: user.name }, // Menambahkan name
     process.env.JWT_SECRET || "rahasiaSuper",
     { expiresIn: "7d" }
   );
@@ -46,6 +47,7 @@ export default defineEventHandler(async (event) => {
       _id: user._id,
       username: user.username,
       role: user.role,
+      name: user.name, // Menambahkan name di respons
     },
   };
 });

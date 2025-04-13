@@ -41,6 +41,7 @@
         <input
           v-model="form.jumlahHalaman"
           type="number"
+          step="0.1"
           class="w-full border p-2 rounded"
           placeholder="Contoh: 1"
         />
