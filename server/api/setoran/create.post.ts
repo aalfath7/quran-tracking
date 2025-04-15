@@ -20,7 +20,7 @@ export default defineEventHandler(async (event) => {
     guru: body.guruId,
     surat: body.surat,
     ayat: body.ayat,
-    jumlahHalaman: body.jumlahHalaman,
+    jumlahHalaman: parseFloat(body.jumlahHalaman),
     catatan: body.catatan || "",
   });
 

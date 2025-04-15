@@ -123,8 +123,8 @@
       </NuxtLink>
       <NuxtLink
         v-if="auth.user?.role === 'guru'"
+        @click="closeMenu"
         to="/edit-profile"
-        class="hover:text-green-600"
       >
         Profile
       </NuxtLink>

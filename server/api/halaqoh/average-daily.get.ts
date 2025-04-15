@@ -1,28 +1,37 @@
-import { defineEventHandler, getCookie } from "h3";
+import { defineEventHandler, getCookie, H3Event } from "h3";
 import jwt from "jsonwebtoken";
 import { connectToDB } from "~/server/utils/mongoose";
 import { Setoran } from "~/server/models/Setoran";
-import { Santri } from "~/server/models/Santri";
 
-export default defineEventHandler(async (event) => {
+interface DecodedToken {
+  id: string;
+  iat?: number;
+  exp?: number;
+}
+
+interface RataRataPerTanggal {
+  tanggal: string;
+  rataRataHalaman: number;
+}
+
+export default defineEventHandler(async (event: H3Event) => {
   try {
-    // ✅ Hubungkan ke DB
     await connectToDB();
 
-    // ✅ Ambil token dari cookie
     const token = getCookie(event, "token");
     if (!token) {
       return { success: false, message: "Token tidak ditemukan." };
     }
 
-    // ✅ Decode token untuk ambil id guru
-    const decoded: any = jwt.verify(token, process.env.JWT_SECRET || "");
-    const guruId = decoded.id; // ID guru diambil dari token
+    const decoded = jwt.verify(
+      token,
+      process.env.JWT_SECRET || ""
+    ) as DecodedToken;
+    const guruId = decoded.id;
 
-    // ✅ Ambil semua setoran berdasarkan guruId
+    // Ambil semua setoran guru
     const setoranList = await Setoran.find({ guru: guruId });
 
-    // ✅ Jika setoranList kosong
     if (setoranList.length === 0) {
       return {
         success: false,
@@ -30,43 +39,42 @@ export default defineEventHandler(async (event) => {
       };
     }
 
-    // ✅ Ambil data santri berdasarkan setoran
-    const santriIds = setoranList.map((s) => s.santri);
-    const santriList = await Santri.find({ _id: { $in: santriIds } });
+    // Group dan hitung rata-rata per tanggal
+    const dataPerTanggal: Record<
+      string,
+      { totalHalaman: number; count: number }
+    > = {};
 
-    // ✅ Buat map untuk akses cepat data santri berdasarkan ID
-    const santriMap = santriList.reduce((acc: any, santri: any) => {
-      acc[santri._id.toString()] = santri.nama; // Menyimpan nama santri
-      return acc;
-    }, {});
+    setoranList.forEach((setoran: any) => {
+      const tanggalStr = new Date(setoran.tanggal).toISOString().split("T")[0];
 
-    // ✅ Menghitung total halaman dan rata-rata halaman per santri
-    const rataRataSetoran = setoranList.reduce((acc: any, setoran: any) => {
-      const santriId = setoran.santri.toString();
-      if (!acc[santriId]) {
-        acc[santriId] = { totalHalaman: 0, countSetoran: 0 };
+      if (!dataPerTanggal[tanggalStr]) {
+        dataPerTanggal[tanggalStr] = { totalHalaman: 0, count: 0 };
       }
-      acc[santriId].totalHalaman += setoran.jumlahHalaman;
-      acc[santriId].countSetoran += 1;
-      return acc;
-    }, {});
 
-    // ✅ Hitung rata-rata halaman per santri dan ambil nama santri
-    const rataRata = Object.keys(rataRataSetoran).map((santriId: string) => {
-      const { totalHalaman, countSetoran } = rataRataSetoran[santriId];
-      return {
-        santriId,
-        nama: santriMap[santriId], // Tambahkan nama santri
-        rataRataHalaman: countSetoran > 0 ? totalHalaman / countSetoran : 0,
-      };
+      dataPerTanggal[tanggalStr].totalHalaman += setoran.jumlahHalaman;
+      dataPerTanggal[tanggalStr].count += 1;
     });
+
+    // Ubah ke array
+    const hasil: RataRataPerTanggal[] = Object.entries(dataPerTanggal).map(
+      ([tanggal, { totalHalaman, count }]) => ({
+        tanggal,
+        rataRataHalaman: count > 0 ? totalHalaman / count : 0,
+      })
+    );
+
+    // Urutkan berdasarkan tanggal
+    hasil.sort(
+      (a, b) => new Date(a.tanggal).getTime() - new Date(b.tanggal).getTime()
+    );
 
     return {
       success: true,
-      data: rataRata,
+      data: hasil,
     };
   } catch (err) {
-    console.error("Gagal hitung rata-rata setoran:", err);
+    console.error("Gagal hitung rata-rata per tanggal:", err);
     return { success: false, message: "Terjadi kesalahan." };
   }
 });
