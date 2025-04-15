@@ -13,7 +13,28 @@
       </div>
     </div>
 
-    <!-- Tabel Responsif -->
+    <!-- Search & Limit -->
+    <div class="flex flex-col md:flex-row md:items-center gap-4 mb-6">
+      <input
+        v-model="search"
+        @input="fetchSantri"
+        type="text"
+        placeholder="Cari nama atau kelas..."
+        class="border p-2 rounded w-full md:w-1/2"
+      />
+
+      <select
+        v-model.number="limit"
+        @change="fetchSantri"
+        class="border p-2 rounded w-28"
+      >
+        <option :value="5">5</option>
+        <option :value="10">10</option>
+        <option :value="20">20</option>
+      </select>
+    </div>
+
+    <!-- Tabel -->
     <div class="overflow-x-auto">
       <table class="min-w-[800px] w-full bg-white border">
         <thead>
@@ -32,8 +53,10 @@
             :key="santri._id"
             class="hover:bg-gray-50"
           >
-            <td class="py-2 px-4 border-b font-semibold text-green-700">
-              {{ index + 1 }}
+            <td
+              class="py-2 px-4 border-b font-semibold text-green-700 text-center"
+            >
+              {{ index + 1 + (currentPage - 1) * limit }}
             </td>
             <td class="py-2 px-4 border-b">{{ santri.nama }}</td>
             <td class="py-2 px-4 border-b">{{ santri.kelas }}</td>
@@ -54,6 +77,41 @@
     <div v-if="!santriList.length" class="text-center py-10 text-gray-500">
       Belum ada data santri.
     </div>
+
+    <!-- Pagination -->
+    <div class="flex justify-center mt-6 gap-2">
+      <button
+        :disabled="currentPage === 1"
+        @click="currentPage--, fetchSantri()"
+        class="px-3 py-1 border rounded disabled:opacity-50"
+      >
+        Prev
+      </button>
+
+      <button
+        v-for="page in totalPages"
+        :key="page"
+        @click="
+          currentPage = page;
+          fetchSantri();
+        "
+        class="px-3 py-1 border rounded"
+        :class="{
+          'bg-green-600 text-white': currentPage === page,
+          'bg-white': currentPage !== page,
+        }"
+      >
+        {{ page }}
+      </button>
+
+      <button
+        :disabled="currentPage === totalPages"
+        @click="currentPage++, fetchSantri()"
+        class="px-3 py-1 border rounded disabled:opacity-50"
+      >
+        Next
+      </button>
+    </div>
   </div>
 </template>
 
@@ -70,18 +128,33 @@ interface Santri {
 }
 
 const santriList = ref<Santri[]>([]);
+const currentPage = ref(1);
+const totalPages = ref(1);
+const search = ref("");
+const limit = ref(10);
 
-onMounted(async () => {
+const fetchSantri = async () => {
   try {
-    const res = await $fetch<{ success: boolean; data: Santri[] }>(
-      "/api/setoran/list"
-    );
+    const res = await $fetch<{
+      success: boolean;
+      data: Santri[];
+      totalPages: number;
+    }>("/api/setoran/list", {
+      query: {
+        page: currentPage.value,
+        limit: limit.value,
+        search: search.value,
+      },
+    });
 
     if (res.success) {
       santriList.value = res.data;
+      totalPages.value = res.totalPages;
     }
   } catch (err) {
     console.error("Gagal memuat data setoran:", err);
   }
-});
+};
+
+onMounted(fetchSantri);
 </script>
