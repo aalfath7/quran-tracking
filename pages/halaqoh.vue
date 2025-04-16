@@ -19,30 +19,32 @@
         <p class="text-gray-600">Total Santri: {{ totalSantri }}</p>
       </div>
 
-      <table class="min-w-full bg-white border mt-2">
-        <thead>
-          <tr class="bg-green-600 text-white">
-            <th class="text-left py-2 px-4 border-b">Nama Santri</th>
-            <th class="text-left py-2 px-4 border-b">Kelas</th>
-            <th class="text-left py-2 px-4 border-b">Total Halaman</th>
-            <th class="text-left py-2 px-4 border-b">Hafalan Terakhir</th>
-            <th class="text-left py-2 px-4 border-b">Setoran Bulan Ini</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr
-            v-for="santri in santriList"
-            :key="santri._id"
-            class="hover:bg-gray-50"
-          >
-            <td class="py-2 px-4 border-b capitalize">{{ santri.nama }}</td>
-            <td class="py-2 px-4 border-b">{{ santri.kelas }}</td>
-            <td class="py-2 px-4 border-b">{{ santri.totalHalaman }}</td>
-            <td class="py-2 px-4 border-b">{{ santri.hafalanTerakhir }}</td>
-            <td class="py-2 px-4 border-b">{{ santri.bulanIni }}</td>
-          </tr>
-        </tbody>
-      </table>
+      <div class="overflow-x-auto">
+        <table class="min-w-[800px] w-full bg-white border mt-2">
+          <thead>
+            <tr class="bg-green-600 text-white">
+              <th class="text-left py-2 px-4 border-b">Nama Santri</th>
+              <th class="text-left py-2 px-4 border-b">Kelas</th>
+              <th class="text-left py-2 px-4 border-b">Total Halaman</th>
+              <th class="text-left py-2 px-4 border-b">Hafalan Terakhir</th>
+              <th class="text-left py-2 px-4 border-b">Setoran Bulan Ini</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              v-for="santri in santriList"
+              :key="santri._id"
+              class="hover:bg-gray-50"
+            >
+              <td class="py-2 px-4 border-b capitalize">{{ santri.nama }}</td>
+              <td class="py-2 px-4 border-b">{{ santri.kelas }}</td>
+              <td class="py-2 px-4 border-b">{{ santri.totalHalaman }}</td>
+              <td class="py-2 px-4 border-b">{{ santri.hafalanTerakhir }}</td>
+              <td class="py-2 px-4 border-b">{{ santri.bulanIni }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 </template>
