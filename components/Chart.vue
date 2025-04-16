@@ -1,6 +1,6 @@
 <template>
   <div class="mb-10">
-    <h2 class="text-xl font-bold text-green-700 mb-4">
+    <h2 class="text-md font-bold text-green-700 mb-4">
       Grafik Setoran Harian Santri
     </h2>
     <Line :data="chartData" :options="chartOptions" />
@@ -36,7 +36,7 @@ const chartData = ref({
   datasets: [],
 });
 
-const chartOptions = {
+const chartOptions: any = {
   responsive: true,
   maintainAspectRatio: false,
   plugins: {
@@ -85,6 +85,6 @@ onMounted(async () => {
 <style scoped>
 /* Optional: fix height */
 div {
-  height: 200px;
+  height: 350px;
 }
 </style>
