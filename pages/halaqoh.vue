@@ -4,13 +4,20 @@
       Data Halaqoh & Santri
     </h1>
 
+    <!-- Loading State -->
+    <div v-if="isLoading" class="text-center text-gray-500 italic">
+      Memuat data...
+    </div>
+
+    <!-- Empty State -->
     <div
-      v-if="santriList.length === 0"
+      v-else-if="santriList.length === 0"
       class="text-center text-gray-500 italic"
     >
       Belum ada data santri.
     </div>
 
+    <!-- Data Table -->
     <div v-else>
       <div class="mb-6">
         <p class="text-xl font-semibold text-green-800 capitalize">
@@ -55,10 +62,11 @@ import { ref, onMounted } from "vue";
 const santriList = ref([]);
 const namaGuru = ref("");
 const totalSantri = ref(0);
+const isLoading = ref(true);
 
 onMounted(async () => {
   try {
-    const res = await $fetch("/api/halaqoh/list"); // Sesuaikan endpoint
+    const res = await $fetch("/api/halaqoh/list");
     if (res.success) {
       santriList.value = res.data;
       namaGuru.value = res.namaGuru;
@@ -66,6 +74,8 @@ onMounted(async () => {
     }
   } catch (err) {
     console.error("Gagal memuat data halaqoh:", err);
+  } finally {
+    isLoading.value = false;
   }
 });
 </script>

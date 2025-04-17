@@ -5,9 +5,14 @@
     <form @submit.prevent="submitSetoran">
       <div class="mb-4">
         <label class="block mb-1">Santri</label>
-        <select v-model="form.santriId" class="w-full border p-2 rounded">
-          <option value="">Pilih Santri</option>
-          <option v-for="s in santriList" :key="s._id" :value="s._id">
+        <select
+          v-model="form.santriId"
+          class="w-full border p-2 rounded"
+          :disabled="loadingSantri"
+        >
+          <option value="" disabled>Pilih Santri</option>
+          <option v-if="loadingSantri" disabled>Memuat data santri...</option>
+          <option v-else v-for="s in santriList" :key="s._id" :value="s._id">
             {{ s.nama }} - {{ s.kelas }}
           </option>
         </select>
@@ -202,12 +207,20 @@ const daftarSurat = [
 ];
 
 const santriList = ref([]);
+const loadingSantri = ref(true); // ⬅️ Loading state
 
 onMounted(async () => {
-  const res = await $fetch("/api/santri/list");
-  santriList.value = res.data.filter(
-    (s) => s.halaqoh?.guru?._id === guruId.value
-  );
+  try {
+    loadingSantri.value = true;
+    const res = await $fetch("/api/santri/list");
+    santriList.value = res.data.filter(
+      (s) => s.halaqoh?.guru?._id === guruId.value
+    );
+  } catch (e) {
+    console.error("Gagal memuat data santri:", e);
+  } finally {
+    loadingSantri.value = false;
+  }
 });
 
 async function submitSetoran() {

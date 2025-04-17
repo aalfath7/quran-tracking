@@ -44,7 +44,14 @@
           </tr>
         </thead>
         <tbody>
+          <tr v-if="isLoading">
+            <td colspan="6" class="text-center py-10 text-gray-500">
+              Memuat data...
+            </td>
+          </tr>
+
           <tr
+            v-else
             v-for="(santri, index) in santriList"
             :key="santri._id"
             class="hover:bg-gray-50"
@@ -70,7 +77,10 @@
       </table>
     </div>
 
-    <div v-if="!santriList.length" class="text-center py-10 text-gray-500">
+    <div
+      v-if="!santriList.length && !isLoading"
+      class="text-center py-10 text-gray-500"
+    >
       Belum ada data santri.
     </div>
 
@@ -128,9 +138,11 @@ const currentPage = ref(1);
 const totalPages = ref(1);
 const search = ref("");
 const limit = ref(10);
+const isLoading = ref(false);
 
 const fetchSantri = async () => {
   try {
+    isLoading.value = true;
     const res = await $fetch<{
       success: boolean;
       data: Santri[];
@@ -149,6 +161,8 @@ const fetchSantri = async () => {
     }
   } catch (err) {
     console.error("Gagal memuat data setoran:", err);
+  } finally {
+    isLoading.value = false;
   }
 };
 

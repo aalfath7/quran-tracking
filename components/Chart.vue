@@ -1,13 +1,5 @@
-<template>
-  <div class="mb-10">
-    <h2 class="text-md font-bold text-green-700 mb-4">
-      Grafik Setoran Harian Santri
-    </h2>
-    <Line :data="chartData" :options="chartOptions" />
-  </div>
-</template>
-
 <script setup lang="ts">
+import { ref, onMounted } from "vue";
 import {
   Chart as ChartJS,
   Title,
@@ -17,9 +9,9 @@ import {
   PointElement,
   LinearScale,
   CategoryScale,
+  type ChartData,
 } from "chart.js";
 import { Line } from "vue-chartjs";
-import { ref, onMounted } from "vue";
 
 ChartJS.register(
   Title,
@@ -31,10 +23,12 @@ ChartJS.register(
   CategoryScale
 );
 
-const chartData = ref({
+const chartData = ref<ChartData<"line">>({
   labels: [],
   datasets: [],
 });
+
+const isLoadingChart = ref(true); // ✅ Tambahkan ini
 
 const chartOptions: any = {
   responsive: true,
@@ -50,37 +44,58 @@ const chartOptions: any = {
 };
 
 onMounted(async () => {
-  const res = await $fetch("/api/setoran/chart");
+  try {
+    const res = await $fetch("/api/setoran/chart");
 
-  if (res.success) {
-    const tanggalSet = new Set<string>();
-    const datasets: any[] = [];
+    if (res.success) {
+      const tanggalSet = new Set<string>();
+      const datasets: any[] = [];
 
-    // Gabungkan semua tanggal yang muncul
-    res.data.forEach((santri: any) => {
-      Object.keys(santri.data).forEach((tgl) => tanggalSet.add(tgl));
-    });
-
-    const sortedLabels = Array.from(tanggalSet).sort();
-
-    res.data.forEach((santri: any, idx: number) => {
-      const data = sortedLabels.map((tgl) => santri.data[tgl] || 0);
-      datasets.push({
-        label: santri.nama,
-        data,
-        fill: false,
-        borderColor: `hsl(${(idx * 70) % 360}, 70%, 50%)`,
-        tension: 0.3,
+      res.data.forEach((santri: any) => {
+        Object.keys(santri.data).forEach((tgl) => tanggalSet.add(tgl));
       });
-    });
 
-    chartData.value = {
-      labels: sortedLabels,
-      datasets,
-    };
+      const sortedLabels = Array.from(tanggalSet).sort();
+
+      res.data.forEach((santri: any, idx: number) => {
+        const data = sortedLabels.map((tgl) => santri.data[tgl] || 0);
+        datasets.push({
+          label: santri.nama,
+          data,
+          fill: false,
+          borderColor: `hsl(${(idx * 70) % 360}, 70%, 50%)`,
+          tension: 0.3,
+        });
+      });
+
+      chartData.value = {
+        labels: sortedLabels,
+        datasets,
+      };
+    }
+  } catch (err) {
+    console.error("Gagal memuat grafik:", err);
+  } finally {
+    isLoadingChart.value = false; // ✅ Set selesai loading
   }
 });
 </script>
+
+<template>
+  <div class="mb-10 h-[350px] relative">
+    <h2 class="text-md font-bold text-green-700 mb-4">
+      Grafik Setoran Harian Santri
+    </h2>
+
+    <div v-if="isLoadingChart" class="flex items-center justify-center h-full">
+      <span class="text-gray-500 animate-pulse">Memuat grafik...</span>
+    </div>
+
+    <div v-else>
+      <Line :data="chartData" :options="chartOptions" />
+    </div>
+  </div>
+</template>
 
 <style scoped>
 /* Optional: fix height */
