@@ -32,6 +32,11 @@ const setoranSchema = new Schema(
     catatan: {
       type: String,
     },
+    jenis: {
+      type: String,
+      enum: ["murojaah", "ziyadah"],
+      required: true,
+    },
   },
   { timestamps: true }
 );

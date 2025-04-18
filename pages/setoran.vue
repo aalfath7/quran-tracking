@@ -5,11 +5,7 @@
     <form @submit.prevent="submitSetoran">
       <div class="mb-4">
         <label class="block mb-1">Santri</label>
-        <select
-          v-model="form.santriId"
-          class="w-full border p-2 rounded"
-          :disabled="loadingSantri"
-        >
+        <select v-model="form.santriId" class="w-full border p-2 rounded">
           <option value="" disabled>Pilih Santri</option>
           <option v-if="loadingSantri" disabled>Memuat data santri...</option>
           <option v-else v-for="s in santriList" :key="s._id" :value="s._id">
@@ -53,6 +49,15 @@
       </div>
 
       <div class="mb-4">
+        <label class="block mb-1">Jenis Setoran</label>
+        <select v-model="form.jenis" class="w-full border p-2 rounded">
+          <option value="">Pilih Jenis Setoran</option>
+          <option value="murojaah">Murojaah</option>
+          <option value="ziyadah">Ziyadah</option>
+        </select>
+      </div>
+
+      <div class="mb-4">
         <label class="block mb-1">Catatan</label>
         <textarea
           v-model="form.catatan"
@@ -87,6 +92,7 @@ const form = ref({
   ayat: "",
   jumlahHalaman: "",
   catatan: "",
+  jenis: "", // Reset jenis
 });
 
 const daftarSurat = [
@@ -224,6 +230,11 @@ onMounted(async () => {
 });
 
 async function submitSetoran() {
+  if (!form.value.jenis) {
+    alert("Jenis setoran harus dipilih.");
+    return;
+  }
+
   try {
     await $fetch("/api/setoran/create", {
       method: "POST",
@@ -239,6 +250,7 @@ async function submitSetoran() {
       ayat: "",
       jumlahHalaman: "",
       catatan: "",
+      jenis: "", // Reset jenis
     };
     router.push("/");
   } catch (e) {

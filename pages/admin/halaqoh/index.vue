@@ -20,9 +20,9 @@
       </thead>
       <tbody>
         <tr v-for="h in halaqohList" :key="h._id">
-          <td class="border p-2 capitalize">{{ h.nama }}</td>
-          <td class="border p-2">{{ h.guru?.name }}</td>
-          <td class="border p-2 space-x-2">
+          <td class="border p-2 text-center capitalize">{{ h.nama }}</td>
+          <td class="border p-2 text-center">{{ h.guru?.name }}</td>
+          <td class="border p-2 text-center space-x-2">
             <button
               class="bg-blue-500 text-white px-2 py-1 rounded"
               @click="openEditModal(h)"
@@ -110,7 +110,7 @@ const successMessage = ref("");
 const errorMessage = ref("");
 
 const fetchHalaqoh = async () => {
-  const data = await $fetch("/api/halaqoh/list");
+  const data = await $fetch("/api/halaqoh/all");
   if (data?.success) {
     halaqohList.value = data.data;
   }

@@ -32,9 +32,9 @@
             <tr class="bg-green-600 text-white">
               <th class="text-left py-2 px-4 border-b">Nama Santri</th>
               <th class="text-left py-2 px-4 border-b">Kelas</th>
-              <th class="text-left py-2 px-4 border-b">Total Halaman</th>
-              <th class="text-left py-2 px-4 border-b">Hafalan Terakhir</th>
-              <th class="text-left py-2 px-4 border-b">Setoran Bulan Ini</th>
+              <th class="text-center py-2 px-4 border-b">Total Halaman</th>
+              <th class="text-center py-2 px-4 border-b">Hafalan Terakhir</th>
+              <th class="text-center py-2 px-4 border-b">Setoran Bulan Ini</th>
             </tr>
           </thead>
           <tbody>
@@ -45,9 +45,15 @@
             >
               <td class="py-2 px-4 border-b capitalize">{{ santri.nama }}</td>
               <td class="py-2 px-4 border-b">{{ santri.kelas }}</td>
-              <td class="py-2 px-4 border-b">{{ santri.totalHalaman }}</td>
-              <td class="py-2 px-4 border-b">{{ santri.hafalanTerakhir }}</td>
-              <td class="py-2 px-4 border-b">{{ santri.bulanIni }}</td>
+              <td class="py-2 px-4 border-b text-center">
+                {{ santri.totalHalaman }}
+              </td>
+              <td class="py-2 px-4 border-b text-center">
+                {{ santri.hafalanTerakhir }}
+              </td>
+              <td class="py-2 px-4 border-b text-center">
+                {{ santri.bulanIni }}
+              </td>
             </tr>
           </tbody>
         </table>

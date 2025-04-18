@@ -6,7 +6,41 @@
 
     <!-- Grid Layout 2 Columns 2 Rows -->
     <div class="grid grid-cols-1 md:grid-cols-1 gap-6 mb-10">
-      <Chart />
+      <Chart :jenis="activeTab" />
+    </div>
+
+    <!-- Tabs -->
+    <div class="flex mb-6 gap-4">
+      <button
+        :class="[
+          'px-4 py-2 rounded font-semibold',
+          activeTab === 'ziyadah'
+            ? 'bg-green-600 text-white'
+            : 'bg-gray-200 text-gray-700',
+        ]"
+        @click="
+          activeTab = 'ziyadah';
+          currentPage = 1;
+          fetchSantri();
+        "
+      >
+        Ziyadah
+      </button>
+      <button
+        :class="[
+          'px-4 py-2 rounded font-semibold',
+          activeTab === 'murojaah'
+            ? 'bg-green-600 text-white'
+            : 'bg-gray-200 text-gray-700',
+        ]"
+        @click="
+          activeTab = 'murojaah';
+          currentPage = 1;
+          fetchSantri();
+        "
+      >
+        Murojaah
+      </button>
     </div>
 
     <!-- Search & Limit -->
@@ -133,6 +167,8 @@ interface Santri {
   bulanIni: number;
 }
 
+const activeTab = ref<"ziyadah" | "murojaah">("ziyadah");
+
 const santriList = ref<Santri[]>([]);
 const currentPage = ref(1);
 const totalPages = ref(1);
@@ -152,6 +188,7 @@ const fetchSantri = async () => {
         page: currentPage.value,
         limit: limit.value,
         search: search.value,
+        jenis: activeTab.value,
       },
     });
 

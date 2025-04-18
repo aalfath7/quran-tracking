@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
+import { ref, onMounted, watch } from "vue";
 import {
   Chart as ChartJS,
   Title,
@@ -23,12 +23,17 @@ ChartJS.register(
   CategoryScale
 );
 
+// 👇 Props: jenis setoran
+const props = defineProps<{
+  jenis: string;
+}>();
+
 const chartData = ref<ChartData<"line">>({
   labels: [],
   datasets: [],
 });
 
-const isLoadingChart = ref(true); // ✅ Tambahkan ini
+const isLoadingChart = ref(true);
 
 const chartOptions: any = {
   responsive: true,
@@ -43,9 +48,14 @@ const chartOptions: any = {
   },
 };
 
-onMounted(async () => {
+// 👇 Fungsi untuk load chart berdasarkan jenis
+const loadChart = async () => {
+  isLoadingChart.value = true;
+
   try {
-    const res = await $fetch("/api/setoran/chart");
+    const res = await $fetch("/api/setoran/chart", {
+      query: { jenis: props.jenis },
+    });
 
     if (res.success) {
       const tanggalSet = new Set<string>();
@@ -76,9 +86,22 @@ onMounted(async () => {
   } catch (err) {
     console.error("Gagal memuat grafik:", err);
   } finally {
-    isLoadingChart.value = false; // ✅ Set selesai loading
+    isLoadingChart.value = false;
   }
+};
+
+// 👇 Load pertama kali
+onMounted(() => {
+  loadChart();
 });
+
+// 👇 Watch jika jenis berubah
+watch(
+  () => props.jenis,
+  () => {
+    loadChart();
+  }
+);
 </script>
 
 <template>
@@ -98,7 +121,6 @@ onMounted(async () => {
 </template>
 
 <style scoped>
-/* Optional: fix height */
 div {
   height: 350px;
 }

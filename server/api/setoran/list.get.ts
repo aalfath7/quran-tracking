@@ -11,11 +11,12 @@ export default defineEventHandler(async (event) => {
     const page = parseInt(query.page as string) || 1;
     const limit = parseInt(query.limit as string) || 10;
     const search = (query.search as string)?.trim() || "";
+    const jenis = (query.jenis as string)?.trim() || "semua";
     const skip = (page - 1) * limit;
 
     // Build filter search
     const searchFilter = search
-      ? { nama: { $regex: search, $options: "i" } } // 'i' untuk case-insensitive
+      ? { nama: { $regex: search, $options: "i" } }
       : {};
 
     const totalSantri = await Santri.countDocuments(searchFilter);
@@ -23,9 +24,30 @@ export default defineEventHandler(async (event) => {
 
     const result = await Promise.all(
       santriList.map(async (santri) => {
-        const setorans = await Setoran.find({ santri: santri._id }).sort({
+        const setoranFilter: any = { santri: santri._id };
+
+        if (jenis !== "semua") {
+          setoranFilter.jenis = jenis;
+        }
+
+        let setorans = await Setoran.find({ santri: santri._id }).sort({
           tanggal: -1,
         });
+
+        // Ganti jenis undefined/null jadi "ziyadah"
+        setorans = setorans.map((s) => {
+          if (!s.jenis) s.jenis = "ziyadah";
+          return s;
+        });
+
+        // Setelah diberi jenis default, filter sesuai parameter jika ada
+        if (jenis !== "semua") {
+          setorans = setorans.filter((s) => s.jenis === jenis);
+        }
+
+        if (setorans.length === 0) {
+          return null;
+        }
 
         const totalHalaman = setorans.reduce(
           (acc, setoran) => acc + (setoran.jumlahHalaman || 0),
@@ -52,19 +74,23 @@ export default defineEventHandler(async (event) => {
           totalHalaman,
           hafalanTerakhir,
           bulanIni,
+          jenis: setorans[0]?.jenis || "ziyadah",
         };
       })
     );
 
+    // Filter yang null (karena tidak punya setoran sesuai jenis)
+    const filteredResult = result.filter((item) => item !== null);
+
     // Urutkan berdasarkan totalHalaman
-    result.sort((a, b) => b.totalHalaman - a.totalHalaman);
+    filteredResult.sort((a, b) => b.totalHalaman - a.totalHalaman);
 
     return {
       success: true,
       currentPage: page,
-      totalPages: Math.ceil(totalSantri / limit),
+      totalPages: Math.ceil(totalSantri / limit), // ini tetap dihitung dari totalSantri, bukan filteredResult.length
       totalSantri,
-      data: result,
+      data: filteredResult,
     };
   } catch (error) {
     console.error("Gagal mengambil data setoran:", error);
